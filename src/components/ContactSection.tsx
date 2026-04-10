@@ -19,17 +19,64 @@ function LeetCodeIcon({ size = 18 }: { size?: number }) {
 
 const CONTACT_EMAIL = "naradaladurgaprasad@gmail.com";
 
+/** FormSubmit forwards POSTs to your inbox. First submission triggers a one-time “Activate Form” email. */
+const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${encodeURIComponent(CONTACT_EMAIL)}`;
+
+function isFormSubmitActivationMessage(message: string) {
+  return /activation|activate form/i.test(message);
+}
+
+type SubmitState = "idle" | "sending" | "sent" | "failed" | "needs_activation";
+
 const ContactSection = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [errorHint, setErrorHint] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Portfolio contact from ${form.name}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    setForm({ name: "", email: "", message: "" });
+    setSubmitState("sending");
+    setErrorHint("");
+    try {
+      const res = await fetch(FORMSUBMIT_AJAX, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio: message from ${form.name}`,
+          _template: "table",
+        }),
+      });
+      const data = (await res.json().catch(() => null)) as { message?: string; success?: boolean | string } | null;
+      const apiMessage = data?.message?.trim() || "";
+
+      if (apiMessage && isFormSubmitActivationMessage(apiMessage)) {
+        setSubmitState("needs_activation");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(apiMessage || `Request failed (${res.status})`);
+      }
+      if (data?.success === false || data?.success === "false") {
+        throw new Error(apiMessage || "Could not send");
+      }
+      setSubmitState("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong. Try again or email directly.";
+      if (isFormSubmitActivationMessage(msg)) {
+        setSubmitState("needs_activation");
+      } else {
+        setSubmitState("failed");
+        setErrorHint(msg);
+      }
+    }
   };
 
   return (
@@ -47,31 +94,76 @@ const ContactSection = () => {
           <form onSubmit={handleSubmit} className="glass-card-strong rounded-3xl p-8 flex flex-col gap-5">
             <input
               type="text"
+              name="name"
+              autoComplete="name"
               placeholder="Your name"
               required
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => {
+                setForm({ ...form, name: e.target.value });
+                if (submitState === "sent" || submitState === "failed" || submitState === "needs_activation")
+                  setSubmitState("idle");
+              }}
               className="input-glass"
             />
             <input
               type="email"
+              name="email"
+              autoComplete="email"
               placeholder="Your email"
               required
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) => {
+                setForm({ ...form, email: e.target.value });
+                if (submitState === "sent" || submitState === "failed" || submitState === "needs_activation")
+                  setSubmitState("idle");
+              }}
               className="input-glass"
             />
             <textarea
+              name="message"
               placeholder="Your message"
               required
               rows={5}
               value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              onChange={(e) => {
+                setForm({ ...form, message: e.target.value });
+                if (submitState === "sent" || submitState === "failed" || submitState === "needs_activation")
+                  setSubmitState("idle");
+              }}
               className="input-glass resize-none min-h-[140px]"
             />
-            <button type="submit" className="btn-primary rounded-xl mt-1 self-start px-10">
+            {submitState === "sent" && (
+              <p className="text-sm text-primary" role="status">
+                Message sent. I will get back to you soon.
+              </p>
+            )}
+            {submitState === "needs_activation" && (
+              <div
+                className="rounded-xl border border-primary/35 bg-primary/5 px-4 py-3 text-sm leading-relaxed text-foreground/95 space-y-2"
+                role="status"
+              >
+                <p className="font-medium text-primary">Activate the form (one-time)</p>
+                <p className="text-muted-foreground">
+                  Check <span className="text-foreground font-medium">{CONTACT_EMAIL}</span> for an email from
+                  FormSubmit. Click <strong className="text-foreground">Activate Form</strong> in that message.
+                  Then use &quot;Send message&quot; again here—submissions will go through normally.
+                </p>
+                <p className="text-xs text-muted-foreground">If you do not see it, look in Spam or Promotions.</p>
+              </div>
+            )}
+            {submitState === "failed" && errorHint && (
+              <p className="text-sm text-destructive" role="alert">
+                {errorHint}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={submitState === "sending"}
+              className="btn-primary rounded-xl mt-1 self-start px-10 disabled:opacity-60 disabled:pointer-events-none"
+            >
               <Send size={16} />
-              Send message
+              {submitState === "sending" ? "Sending…" : "Send message"}
             </button>
           </form>
 

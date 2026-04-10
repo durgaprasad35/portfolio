@@ -11,12 +11,23 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <ResumeSection />
-      <ContactSection />
+      <main>
+        <HeroSection />
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
+          <AboutSection />
+        </div>
+        <SkillsSection />
+        <div className="relative bg-muted/[0.12]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <ProjectsSection />
+        </div>
+        <ResumeSection />
+        <div className="relative bg-muted/[0.08]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <ContactSection />
+        </div>
+      </main>
       <Footer />
     </div>
   );

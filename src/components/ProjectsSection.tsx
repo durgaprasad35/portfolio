@@ -8,7 +8,8 @@ interface Project {
   description: string;
   tech: string[];
   category: ProjectCategory;
-  github: string;
+  demoUrl?: string;
+  repoUrl?: string;
 }
 
 const projects: Project[] = [
@@ -18,23 +19,38 @@ const projects: Project[] = [
       "Built a regression model to predict house prices using features like area, bedrooms, and location. Applied feature engineering and model tuning for optimal accuracy.",
     tech: ["Python", "Scikit-learn", "Pandas", "NumPy"],
     category: "ML",
-    github: "#",
   },
   {
-    title: "Credit Card Fraud Detection",
+    title: "Transaction Risk AI",
     description:
-      "Developed a classification system to detect fraudulent transactions using imbalanced dataset handling techniques like SMOTE and ensemble methods.",
-    tech: ["Python", "Scikit-learn", "Pandas", "Matplotlib"],
+      "Interactive Streamlit app for transaction risk analysis—explore patterns, model outputs, and data-driven signals for safer decisions.",
+    tech: ["Python", "Streamlit", "Machine Learning", "Pandas"],
     category: "ML",
-    github: "#",
+    demoUrl: "https://transaction-risk-ai.streamlit.app/",
   },
   {
-    title: "Olist E-commerce Analysis",
+    title: "Student Dropout Prediction App",
     description:
-      "Performed in-depth analysis of the Olist dataset using SQL Server—explored customer behavior, delivery performance, and revenue trends.",
-    tech: ["SQL Server", "Data Analysis", "Joins", "CTEs"],
+      "Streamlit app that estimates dropout risk from academic and demographic signals—upload or explore sample data and review model-backed insights to support early intervention.",
+    tech: ["Python", "Streamlit", "Scikit-learn", "Pandas"],
+    category: "ML",
+    demoUrl: "https://protfolioprojects-dithfkytpvory2tz4cp2qw.streamlit.app/",
+  },
+  {
+    title: "SQL Projects — E-commerce & analytics",
+    description:
+      "SQL analysis on the Olist e-commerce dataset—customer behavior, delivery performance, and revenue—plus exploratory queries, window functions, and segmentation. Full scripts live in the repo.",
+    tech: ["SQL Server", "Joins", "CTEs", "Window functions"],
     category: "SQL",
-    github: "#",
+    repoUrl: "https://github.com/durgaprasad35/Sql-projects",
+  },
+  {
+    title: "BlinkIT grocery analysis",
+    description:
+      "End-to-end SQL analytics on BlinkIT grocery sales data—cleaning and standardizing fields, then KPIs for total and average sales, item counts, and ratings. Deeper cuts by item fat content, product type, outlet age, location tier, and outlet size to explain performance and support store optimization.",
+    tech: ["SQL", "Data cleaning", "Aggregations", "KPIs"],
+    category: "SQL",
+    repoUrl: "https://github.com/durgaprasad35/Blinkit_analysis_Sql",
   },
   {
     title: "Sales Data Dashboard",
@@ -42,7 +58,6 @@ const projects: Project[] = [
       "Created an interactive dashboard visualizing sales KPIs, regional performance, and product trends with dynamic filters and drill-downs.",
     tech: ["Power BI", "Tableau", "Excel", "DAX"],
     category: "Dashboard",
-    github: "#",
   },
 ];
 
@@ -54,25 +69,26 @@ const ProjectsSection = () => {
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
   return (
-    <section id="projects" className="py-24 px-6">
+    <section id="projects" className="py-28 px-6">
       <div className="container mx-auto max-w-5xl">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-4">
+        <p className="section-kicker">Portfolio</p>
+        <h2 className="section-title">
           Featured <span className="gradient-text">Projects</span>
         </h2>
-        <p className="text-muted-foreground text-center max-w-xl mx-auto mb-10">
-          A selection of projects showcasing my skills in data analysis, ML, and visualization.
+        <p className="section-subtitle mb-12">
+          A selection of work spanning data analysis, machine learning, and visualization.
         </p>
 
-        {/* Filter tabs */}
-        <div className="flex justify-center gap-3 mb-12 flex-wrap">
+        <div className="flex justify-center gap-2.5 mb-14 flex-wrap">
           {filters.map((f) => (
             <button
               key={f}
+              type="button"
               onClick={() => setActive(f)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border ${
                 active === f
-                  ? "text-primary-foreground glow-primary"
-                  : "glass-card text-muted-foreground hover:text-foreground"
+                  ? "text-primary-foreground border-transparent glow-primary"
+                  : "glass-card text-muted-foreground hover:text-foreground border-transparent hover:border-primary/20"
               }`}
               style={active === f ? { backgroundImage: "var(--gradient-primary)" } : undefined}
             >
@@ -81,40 +97,64 @@ const ProjectsSection = () => {
           ))}
         </div>
 
-        {/* Project cards */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-7 lg:gap-8">
           {filtered.map((project, i) => (
-            <div
+            <article
               key={project.title}
-              className="glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 group flex flex-col"
-              style={{ animationDelay: `${i * 100}ms` }}
+              className="glass-card-interactive glass-card rounded-2xl p-7 md:p-8 flex flex-col text-left group"
+              style={{ animationDelay: `${i * 80}ms` }}
             >
-              <div className="flex items-start justify-between mb-3">
-                <h3 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                  aria-label={`GitHub link for ${project.title}`}
-                >
-                  <Github size={18} />
-                </a>
+              <div className="h-1 w-12 rounded-full bg-gradient-to-r from-primary to-accent mb-5 opacity-90 group-hover:w-16 transition-all duration-300" />
+              <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                <div>
+                  <span className="inline-block text-[0.6rem] font-semibold uppercase tracking-wider text-primary/90 mb-2">
+                    {project.category}
+                  </span>
+                  <h3 className="font-heading text-lg md:text-xl font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
+                    {project.title}
+                  </h3>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-4 flex-1">{project.description}</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="text-sm text-muted-foreground mb-6 flex-1 leading-relaxed">{project.description}</p>
+
+              <div className="flex flex-wrap gap-2 mb-6">
                 {project.tech.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary"
+                    className="text-[0.7rem] px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/10"
                   >
                     {t}
                   </span>
                 ))}
               </div>
-            </div>
+
+              {(project.demoUrl || project.repoUrl) && (
+                <div className="flex flex-wrap gap-3 pt-2 border-t border-border/60">
+                  {project.demoUrl && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/85 transition-colors"
+                    >
+                      <ExternalLink size={16} className="opacity-80" />
+                      Live demo
+                    </a>
+                  )}
+                  {project.repoUrl && (
+                    <a
+                      href={project.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Github size={16} className="opacity-80" />
+                      GitHub
+                    </a>
+                  )}
+                </div>
+              )}
+            </article>
           ))}
         </div>
       </div>

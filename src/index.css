@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -46,6 +46,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-border;
   }
@@ -66,6 +70,77 @@
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 4px 24px hsl(222 47% 4% / 0.35);
+  }
+
+  .glass-card-strong {
+    background: linear-gradient(
+      145deg,
+      hsl(222 47% 11% / 0.75) 0%,
+      hsl(222 47% 8% / 0.55) 100%
+    );
+    border: 1px solid hsl(210 40% 95% / 0.1);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow:
+      0 4px 24px hsl(222 47% 4% / 0.4),
+      inset 0 1px 0 hsl(210 40% 98% / 0.04);
+  }
+
+  .glass-card-interactive {
+    @apply transition-all duration-300;
+    box-shadow: 0 4px 24px hsl(222 47% 4% / 0.35);
+  }
+
+  .glass-card-interactive:hover {
+    border-color: hsl(187 85% 53% / 0.25);
+    box-shadow:
+      0 20px 50px -18px hsl(187 85% 53% / 0.18),
+      0 4px 24px hsl(222 47% 4% / 0.45);
+    transform: translateY(-3px);
+  }
+
+  .section-kicker {
+    @apply text-primary font-semibold tracking-[0.22em] uppercase text-[0.65rem] md:text-xs mb-3 text-center;
+  }
+
+  .section-title {
+    @apply font-heading text-3xl md:text-[2.45rem] font-bold text-center text-foreground mb-4 leading-tight;
+  }
+
+  .section-subtitle {
+    @apply text-muted-foreground text-center max-w-xl mx-auto text-[0.95rem] md:text-base leading-relaxed;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-medium text-primary-foreground transition-all duration-300;
+    background-image: var(--gradient-primary);
+    box-shadow: 0 4px 20px hsl(187 85% 53% / 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 36px hsl(187 85% 53% / 0.35);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-medium border text-foreground transition-all duration-300;
+    border-color: hsl(222 30% 22%);
+    background: hsl(222 47% 8% / 0.4);
+  }
+
+  .btn-outline:hover {
+    border-color: hsl(187 85% 53% / 0.45);
+    @apply text-primary;
+    box-shadow: 0 0 0 1px hsl(187 85% 53% / 0.15);
+  }
+
+  .input-glass {
+    @apply glass-card rounded-xl px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/80 transition-all duration-200;
+  }
+
+  .input-glass:focus {
+    @apply outline-none ring-2 ring-primary/35 border-primary/20;
   }
 
   .gradient-text {

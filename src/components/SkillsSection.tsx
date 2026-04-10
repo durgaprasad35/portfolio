@@ -11,33 +11,48 @@ const skills = [
   { name: "HTML & CSS", level: 70, category: "Languages" },
 ];
 
+const categories = ["Languages", "ML", "Tools"] as const;
+
 const SkillsSection = () => {
   return (
-    <section id="skills" className="py-24 px-6">
+    <section id="skills" className="py-28 px-6">
       <div className="container mx-auto max-w-4xl">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-4">
+        <p className="section-kicker">Expertise</p>
+        <h2 className="section-title">
           My <span className="gradient-text">Skills</span>
         </h2>
-        <p className="text-muted-foreground text-center max-w-xl mx-auto mb-16">
+        <p className="section-subtitle mb-14">
           Tools and technologies I work with to turn data into decisions.
         </p>
 
-        <div className="grid gap-5">
-          {skills.map((skill, i) => (
-            <div key={i} className="group">
-              <div className="flex justify-between mb-1.5">
-                <span className="text-sm font-medium text-foreground">{skill.name}</span>
-                <span className="text-xs text-muted-foreground">{skill.level}%</span>
-              </div>
-              <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{
-                    width: `${skill.level}%`,
-                    backgroundImage: "var(--gradient-primary)",
-                    animationDelay: `${i * 100}ms`,
-                  }}
-                />
+        <div className="glass-card-strong rounded-3xl p-8 md:p-10 space-y-10">
+          {categories.map((cat) => (
+            <div key={cat}>
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary/90 mb-4">
+                {cat}
+              </p>
+              <div className="space-y-5">
+                {skills
+                  .filter((s) => s.category === cat)
+                  .map((skill, i) => (
+                    <div key={skill.name} className="group">
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium text-foreground">{skill.name}</span>
+                        <span className="text-xs tabular-nums text-muted-foreground">{skill.level}%</span>
+                      </div>
+                      <div className="h-2.5 rounded-full bg-secondary/80 overflow-hidden ring-1 ring-inset ring-white/[0.04]">
+                        <div
+                          className="h-full rounded-full transition-all duration-1000 ease-out group-hover:brightness-110"
+                          style={{
+                            width: `${skill.level}%`,
+                            backgroundImage: "var(--gradient-primary)",
+                            boxShadow: "0 0 20px hsl(187 85% 53% / 0.25)",
+                            transitionDelay: `${i * 40}ms`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
           ))}
